@@ -1,0 +1,66 @@
+<div class="ui segment">
+  <h3>Connection Settings</h3>
+
+  <div class="ui icon negative message" data-bind="visible: isError">
+    <div class="content">
+      <h3>Error Occurred</h3>
+      <p data-bind="text: errorMessage"></p>
+    </div>
+  </div>
+
+  <div class="ui form" data-bind="css: { loading: isLoading }">
+    <div class="two fields">
+      <div class="required field" data-bind="css: { error: isServerNameInvalid }">
+        <label for="server_name">Server name:</label>
+        <input id="server_name" type="text" data-bind="textInput: serverName">
+      </div>
+
+      <div class="required field" data-bind="css: { error: isPortNumberInvalid }">
+        <label for="port_number">Port number:</label>
+        <input id="port_number" type="text" data-bind="textInput: portNumber">
+      </div>
+    </div>
+
+    <div class="two fields">
+      <div class="required field" data-bind="css: { error: isUserNameInvalid }">
+        <label for="user_name">User name:</label>
+        <input id="user_name" type="text" data-bind="textInput: userName">
+      </div>
+
+      <div class="field">
+        <label for="password">Password:</label>
+        <input id="password" type="text" data-bind="textInput: password">
+      </div>
+    </div>
+
+    <div class="two fields">
+      <div class="field" data-bind="css: { error: isDatabaseInvalid, disabled: isDatabaseDisabled }">
+        <label for="database">Database:</label>
+        <select id="database" data-bind="
+            hasFocus: loadDatabases,
+            options: databaseList,
+            value: databaseSelected,
+            optionsCaption: 'Choose database...'
+          " class="ui dropdown">
+        </select>
+      </div>
+
+      <div class="field" data-bind="css: { error: isStageInvalid, disabled: isStageDisabled }">
+        <label for="stage">Stage:</label>
+        <select id="stage" data-bind="
+            hasFocus: loadStages,
+            options: stageList,
+            value: stageSelected,
+            optionsCaption: 'Choose stage...'
+          " class="ui dropdown">
+        </select>
+      </div>
+    </div>
+
+    <div class="three ui buttons">
+      <button class="ui primary button" data-bind="click: loadData, css: { disabled: isFormInvalid }">Connect</button>
+      <button class="ui grey button" data-bind="click: loadDatabases, css: { disabled: isDatabaseDisabled }">Load databases</button>
+      <button class="ui grey button" data-bind="click: loadStages, css: { disabled: isStageDisabled }">Load stages</button>
+    </div>
+  </div>
+</div>

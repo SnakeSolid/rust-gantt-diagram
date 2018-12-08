@@ -1,0 +1,64 @@
+<div class="ui vertical segment">
+  <div data-bind="ganttChart: { items: items, selectCallback: selectedItems }"></div>
+</div>
+
+<div class="ui vertical segment">
+  <div class="ui grid">
+    <div class="one wide column"></div>
+
+    <div class="fourteen wide column">
+      <p data-bind="foreach: groups">
+        <span style="
+          padding-left: 10px;
+          padding-right: 10px;
+        ">
+          <span data-bind="style: {
+            'background-color': color
+          }" style="
+            border-style: solid;
+            border-color: black;
+            border-width: thin;
+          ">&emsp;</span> &mdash; <span data-bind="text: name"></span>,
+        </span>
+      </p>
+    </div>
+
+    <div class="one wide column"></div>
+  </div>
+</div>
+
+<div class="ui vertical segment" data-bind="if: hasSelectedItems">
+  <div class="ui grid">
+    <div class="one wide column"></div>
+
+    <div class="fourteen wide column">
+      <h3>Selected Items</h3>
+
+      <table class="ui striped compact table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Duration</th>
+            <th>Group</th>
+            <th>Thread</th>
+          </tr>
+        </thead>
+
+        <tbody data-bind="foreach: selectedItems">
+          <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: startTimeText"></td>
+            <td data-bind="text: endTimeText"></td>
+            <td data-bind="text: durationText"></td>
+            <td data-bind="text: groupName"></td>
+            <td data-bind="text: threadName"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="one wide column"></div>
+  </div>
+</div>
