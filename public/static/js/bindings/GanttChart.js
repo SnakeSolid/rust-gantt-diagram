@@ -2,6 +2,8 @@
 
 define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(ko, d3, moment, Util) {
 	const KEY_CHART = "chart";
+	const THRESHOLD_DRAW = 0.01;
+	const THRESHOLD_LINE = 0.1;
 
 	const CHART_FONT = "14px sans-serif";
 	const CHART_PADDING_LEFT = 140;
@@ -348,13 +350,22 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			}
 
 			const width = endX - startX;
+
+			if (width < THRESHOLD_DRAW) {
+				continue;
+			}
+
 			const threadIndex = this.threadLines[item.threadName];
 			const groupColor = this.groupColors[item.groupName];
 
 			this.context.beginPath();
 			this.context.rect(startX, CHART_THREAD_OFFSET + CHART_THREAD_HEIGHT * threadIndex, width, 21);
 			this.context.fillStyle = groupColor;
-			this.context.fill();
+
+			if (width > THRESHOLD_LINE) {
+				this.context.fill();
+			}
+
 			this.context.stroke();
 		}
 
