@@ -57,33 +57,50 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 		this.canvas.addEventListener("click", this.onSelect.bind(this));
 	};
 
+	const getCursorPosition = function(event) {
+		const target = event.target;
+		const clientRect = target.getBoundingClientRect();
+		const x = event.clientX - clientRect.left;
+		const y = event.clientY - clientRect.top;
+
+		if (x < CHART_PADDING_LEFT
+			|| x > target.width - CHART_PADDING_RIGHT
+			|| y < CHART_PADDING_TOP
+			|| y > target.height - CHART_PADDING_BOTTOM) {
+			return null;
+		}
+
+		return [ x, y ];
+	};
+
 	GanttChart.prototype.onSelect = function(event) {
 		if (!this.isInitialized() || !this.isSimpleClick || event.button !== 0 || this.selectCallback === null) {
 			return;
 		}
 
-		const x = event.clientX;
+		const cursorPosition = getCursorPosition(event);
 
-		if (x < CHART_PADDING_LEFT && x > CHART_PADDING_RIGHT) {
+		if (cursorPosition === null) {
 			return;
 		}
 
-		const position = this.xScale.invert(x).getTime();
-		const selected = [];
+		const x = cursorPosition[0];
+		const positionX = this.xScale.invert(x).getTime();
+		const selectedItems = [];
 
 		for (const item of this.items) {
-			if (item.endTime < position || item.startTime > position) {
+			if (item.endTime < positionX || item.startTime > positionX) {
 				continue;
 			}
 
 			const threadIndex = this.threadLines[item.threadName];
 
 			if (this.cursorThread === threadIndex) {
-				selected.push(item);
+				selectedItems.push(item);
 			}
 		}
 
-		this.selectCallback(selected);
+		this.selectCallback(selectedItems);
 
 		event.preventDefault();
 	}
@@ -93,14 +110,14 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			return;
 		}
 
-		const x = event.clientX;
+		const cursorPosition = getCursorPosition(event);
 
-		if (x < CHART_PADDING_LEFT && x > CHART_PADDING_RIGHT) {
+		if (cursorPosition === null) {
 			return;
 		}
 
 		this.isPanMode = true;
-		this.panPosition = this.xScale.invert(x).getTime();
+		this.panPosition = this.xScale.invert(cursorPosition[0]).getTime();
 		this.isSimpleClick = true;
 
 		event.preventDefault();
@@ -111,41 +128,32 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			return;
 		}
 
+		const cursorPosition = getCursorPosition(event);
+
+		if (cursorPosition === null) {
+			return;
+		}
+
 		this.isSimpleClick = false;
 
-		const clientRect = event.target.getBoundingClientRect();
-		const x = event.clientX - clientRect.left;
-		const position = this.xScale.invert(x).getTime();
-		let needDraw = false;
+		const x = cursorPosition[0];
+		const y = cursorPosition[1];
+		const positionX = this.xScale.invert(x).getTime();
 
 		if (this.isPanMode) {
-			const viewOffset = this.panPosition - position;
+			const viewOffset = this.panPosition - positionX;
 
 			this.viewMin += viewOffset;
 			this.viewMax += viewOffset;
-			this.adjustView(position);
-
+			this.adjustView(positionX);
 			this.panPosition =  this.xScale.invert(x).getTime();
-			this.cursorPosition = null;
-			this.cursorThread = null;
-
-			needDraw = true;
 		}
 
-		const y = event.clientY - clientRect.top;
+		this.cursorPosition = positionX;
+		this.cursorThread = Math.floor((y - CHART_PADDING_TOP) / CHART_THREAD_HEIGHT);
+		this.doDraw();
 
-		if (y > CHART_PADDING_TOP && y < CHART_PADDING_TOP + CHART_THREAD_HEIGHT * this.nThreadLines) {
-			this.cursorPosition = position;
-			this.cursorThread = Math.floor((y - CHART_PADDING_TOP) / CHART_THREAD_HEIGHT);
-
-			needDraw = true;
-		}
-
-		if (needDraw) {
-			this.doDraw();
-
-			event.preventDefault();
-		}
+		event.preventDefault();
 	};
 
 	GanttChart.prototype.onPanStop = function(event) {
@@ -161,19 +169,24 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 	};
 
 	GanttChart.prototype.onWhell = function(event) {
-		const x = event.clientX;
-		const delta = event.deltaY;
+		const cursorPosition = getCursorPosition(event);
 
-		if (Math.abs(delta) < 0.1 && x < CHART_PADDING_LEFT && x > CHART_PADDING_RIGHT) {
+		if (cursorPosition === null) {
 			return;
 		}
 
+		const delta = event.deltaY;
+
+		if (Math.abs(delta) < 0.1) {
+			return;
+		}
+
+		const x = cursorPosition[0];
 		const viewPosition = this.xScale.invert(x).getTime();
 		const factor = Math.pow(1.1, delta);
 
 		this.viewMin = factor * (this.viewMin - viewPosition) + viewPosition;
 		this.viewMax = factor * (this.viewMax - viewPosition) + viewPosition;
-
 		this.adjustView(viewPosition);
 		this.doDraw();
 
