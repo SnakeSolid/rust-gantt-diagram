@@ -5,6 +5,7 @@ use iron::middleware::Handler;
 use iron::IronResult;
 use iron::Request as IronRequest;
 use iron::Response as IronResponse;
+use time::Timespec;
 
 #[derive(Debug)]
 pub struct DataHandler {}
@@ -34,25 +35,47 @@ impl Handler for DataHandler {
                     &request.database,
                     &request.stage,
                     |name, start_date, end_date, group, thread| {
-                        let name: String = name
-                            .chars()
-                            .filter(|&ch| !ch.is_control() && ch != ';')
-                            .collect();
-                        let start_date: i64 = SECOND_MULTIPLIER * start_date.sec
-                            + start_date.nsec as i64 / NANOSECOND_DIVIDER;
-                        let end_date: i64 = SECOND_MULTIPLIER * end_date.sec
-                            + end_date.nsec as i64 / NANOSECOND_DIVIDER;
-
-                        result.push_str(&format!(
-                            "{};{};{};{};{}\n",
-                            name, start_date, end_date, group, thread
-                        ))
+                        result.push_str(&to_dlm_string(name, start_date, end_date, group, thread))
                     },
                 )
                 .map_err(|e| HandlerError::new(&e.to_string()))?;
 
             Ok(result)
         })
+    }
+}
+
+fn to_dlm_string(
+    name: &str,
+    start_date: Timespec,
+    end_date: Timespec,
+    group: &str,
+    thread: &str,
+) -> String {
+    let name: String = name
+        .chars()
+        .filter(|&ch| !ch.is_control() && ch != ';')
+        .collect();
+    let start_date: i64 =
+        SECOND_MULTIPLIER * start_date.sec + start_date.nsec as i64 / NANOSECOND_DIVIDER;
+    let end_date: i64 =
+        SECOND_MULTIPLIER * end_date.sec + end_date.nsec as i64 / NANOSECOND_DIVIDER;
+
+    if start_date < end_date {
+        format!(
+            "{};{};{};{};{}\n",
+            name, start_date, end_date, group, thread
+        )
+    } else {
+        // If start time greater then end time assume that end time invalid.
+        format!(
+            "{};{};{};{};{}\n",
+            name,
+            start_date,
+            start_date + 1,
+            group,
+            thread
+        )
     }
 }
 

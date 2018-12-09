@@ -336,13 +336,23 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 				continue;
 			}
 
-			const x = this.xScale(item.startTime);
-			const width = this.xScale(item.endTime) - this.xScale(item.startTime);
+			let startX = this.xScale(item.startTime);
+			let endX = this.xScale(item.endTime);
+
+			if (startX < CHART_PADDING_LEFT - 1.0) {
+				startX < CHART_PADDING_LEFT - 1.0;
+			}
+
+			if (endX > this.canvas.width - CHART_PADDING_RIGHT + 1.0) {
+				endX > this.canvas.width - CHART_PADDING_RIGHT + 1.0;
+			}
+
+			const width = endX - startX;
 			const threadIndex = this.threadLines[item.threadName];
 			const groupColor = this.groupColors[item.groupName];
 
 			this.context.beginPath();
-			this.context.rect(x, CHART_THREAD_OFFSET + CHART_THREAD_HEIGHT * threadIndex, width, 21);
+			this.context.rect(startX, CHART_THREAD_OFFSET + CHART_THREAD_HEIGHT * threadIndex, width, 21);
 			this.context.fillStyle = groupColor;
 			this.context.fill();
 			this.context.stroke();
