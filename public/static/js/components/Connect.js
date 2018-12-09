@@ -101,7 +101,7 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			contentType: 'application/json',
 			data: JSON.stringify({
 				server: this.serverName(),
-				port: this.portNumber(),
+				port: parseInt(this.portNumber()),
 				user: this.userName(),
 				password: this.password(),
 			})
@@ -127,7 +127,7 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			contentType: 'application/json',
 			data: JSON.stringify({
 				server: this.serverName(),
-				port: this.portNumber(),
+				port: parseInt(this.portNumber()),
 				user: this.userName(),
 				password: this.password(),
 				database: this.databaseSelected(),
@@ -154,7 +154,7 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			contentType: 'application/json',
 			data: JSON.stringify({
 				server: this.serverName(),
-				port: this.portNumber(),
+				port: parseInt(this.portNumber()),
 				user: this.userName(),
 				password: this.password(),
 				database: this.databaseSelected(),
