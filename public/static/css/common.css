@@ -1,0 +1,11 @@
+span.group_block {
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+span.group_block > span.group_color {
+	border-style: solid;
+	border-color: black;
+	border-width: thin;
+}
