@@ -34,10 +34,9 @@
     </div>
 
     <div class="two fields">
-      <div class="field" data-bind="css: { error: isDatabaseInvalid, disabled: isDatabaseDisabled }">
+      <div class="required field" data-bind="css: { error: isDatabaseInvalid, disabled: isDatabaseDisabled }">
         <label for="database">Database:</label>
         <select id="database" data-bind="
-            hasFocus: loadDatabases,
             options: databaseList,
             value: databaseSelected,
             optionsCaption: 'Choose database...'
@@ -45,10 +44,9 @@
         </select>
       </div>
 
-      <div class="field" data-bind="css: { error: isStageInvalid, disabled: isStageDisabled }">
+      <div class="required field" data-bind="css: { error: isStageInvalid, disabled: isStageDisabled }">
         <label for="stage">Stage:</label>
         <select id="stage" data-bind="
-            hasFocus: loadStages,
             options: stageList,
             value: stageSelected,
             optionsCaption: 'Choose stage...'

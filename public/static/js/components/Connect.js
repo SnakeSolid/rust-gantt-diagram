@@ -74,6 +74,8 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 		this.databaseSelected.subscribe(function(newValue) {
 			if (newValue !== undefined) {
 				this.loadStages();
+			} else {
+				this.stageList([]);
 			}
 		}.bind(this));
 	};
