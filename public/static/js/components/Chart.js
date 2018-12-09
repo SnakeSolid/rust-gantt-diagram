@@ -9,6 +9,10 @@ define([ "knockout", "d3", "Target", "Util", "bindings/GanttChart" ], function(k
 		this.selectedItems = ko.observableArray([]);
 		this.groupColors = ko.observable({});
 
+		this.hasItems = ko.pureComputed(function() {
+			return this.items().length > 0;
+		}, this);
+
 		this.hasSelectedItems = ko.pureComputed(function() {
 			return this.selectedItems().length > 0;
 		}, this);

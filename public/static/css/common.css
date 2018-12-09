@@ -5,7 +5,14 @@ span.group_block {
 }
 
 span.group_block > span.group_color {
-	border-style: solid;
 	border-color: black;
+	border-style: solid;
 	border-width: thin;
+}
+
+hr.separator {
+	background-color: #808080;
+	border: none;
+	height: 2px;
+	width: 90%;
 }

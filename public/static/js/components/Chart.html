@@ -1,8 +1,10 @@
-<div class="ui vertical segment">
-  <div data-bind="ganttChart: { items: items, selectCallback: selectedItems }"></div>
-</div>
+<div data-bind="if: hasItems">
+  <div>
+    <div data-bind="ganttChart: { items: items, selectCallback: selectedItems }"></div>
+  </div>
 
-<div class="ui vertical segment">
+  <hr class="separator">
+
   <div class="ui grid">
     <div class="one wide column"></div>
 
@@ -18,46 +20,55 @@
 
     <div class="one wide column"></div>
   </div>
+
+  <div data-bind="if: hasSelectedItems">
+    <hr class="separator">
+
+    <div class="ui grid">
+      <div class="one wide column"></div>
+
+      <div class="fourteen wide column">
+        <h3>Selected Items</h3>
+
+        <table class="ui striped compact table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Group</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Duration</th>
+              <th>Thread</th>
+            </tr>
+          </thead>
+
+          <tbody data-bind="foreach: selectedItems">
+            <tr>
+              <td data-bind="text: name"></td>
+              <td>
+                <span class="group_block">
+                  <span class="group_color" data-bind="style: $component.groupStyle(groupName)">&emsp;</span>
+                  &mdash;
+                  <span data-bind="text: groupName"></span>
+                </span>
+              </td>
+              <td data-bind="text: startTimeText"></td>
+              <td data-bind="text: endTimeText"></td>
+              <td data-bind="text: durationText"></td>
+              <td data-bind="text: threadName"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="one wide column"></div>
+    </div>
+  </div>
 </div>
 
-<div class="ui vertical segment" data-bind="if: hasSelectedItems">
-  <div class="ui grid">
-    <div class="one wide column"></div>
-
-    <div class="fourteen wide column">
-      <h3>Selected Items</h3>
-
-      <table class="ui striped compact table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Group</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Duration</th>
-            <th>Thread</th>
-          </tr>
-        </thead>
-
-        <tbody data-bind="foreach: selectedItems">
-          <tr>
-            <td data-bind="text: name"></td>
-            <td>
-              <span class="group_block">
-                <span class="group_color" data-bind="style: $component.groupStyle(groupName)">&emsp;</span>
-                &mdash;
-                <span data-bind="text: groupName"></span>
-              </span>
-            </td>
-            <td data-bind="text: startTimeText"></td>
-            <td data-bind="text: endTimeText"></td>
-            <td data-bind="text: durationText"></td>
-            <td data-bind="text: threadName"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="one wide column"></div>
-  </div>
+<div data-bind="ifnot: hasItems">
+  <h3 class="ui center aligned icon header">
+    <i class="plug icon icon"></i>
+    Connection Has No Items
+  </h3>
 </div>
