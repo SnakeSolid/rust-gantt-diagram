@@ -70,6 +70,12 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 		this.isError = ko.pureComputed(function() {
 			return this.state() === STATE_ERROR;
 		}, this);
+
+		this.databaseSelected.subscribe(function(newValue) {
+			if (newValue !== undefined) {
+				this.loadStages();
+			}
+		}.bind(this));
 	};
 
 	Connect.prototype.setReady = function() {
