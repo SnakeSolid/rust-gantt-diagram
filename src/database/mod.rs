@@ -36,7 +36,7 @@ impl PostgreSQL {
 
         for row in &connection
             .query(include_str!("sql/databases.sql"), &[])
-            .unwrap()
+            .map_err(DatabaseError::query_execution_error)?
         {
             let name = row
                 .get_opt(0)
@@ -54,7 +54,7 @@ impl PostgreSQL {
 
         for row in &connection
             .query(include_str!("sql/stages.sql"), &[])
-            .unwrap()
+            .map_err(DatabaseError::query_execution_error)?
         {
             let name = row
                 .get_opt(0)
@@ -74,7 +74,7 @@ impl PostgreSQL {
 
         for row in &connection
             .query(include_str!("sql/data.sql"), &[&stage])
-            .unwrap()
+            .map_err(DatabaseError::query_execution_error)?
         {
             let name: String = row
                 .get_opt(0)
