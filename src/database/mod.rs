@@ -66,9 +66,14 @@ impl PostgreSQL {
         Ok(result)
     }
 
-    pub fn data<F>(&self, database: &str, stage: &str, mut callback: F) -> DatabaseResult<()>
+    pub fn data<F, E>(
+        &self,
+        database: &str,
+        stage: &str,
+        mut callback: F,
+    ) -> DatabaseResult<Result<(), E>>
     where
-        F: FnMut(&str, Timespec, Timespec, &str, &str),
+        F: FnMut(&str, Timespec, Timespec, &str, &str) -> Result<(), E>,
     {
         let connection = self.connect(Some(database))?;
 
@@ -103,10 +108,12 @@ impl PostgreSQL {
                 .map_err(DatabaseError::time_parse_error)?
                 .to_timespec();
 
-            callback(&name, start_time, end_time, &group, &thread);
+            if let Err(err) = callback(&name, start_time, end_time, &group, &thread) {
+                return Ok(Err(err));
+            }
         }
 
-        Ok(())
+        Ok(Ok(()))
     }
 
     fn connect(&self, database: Option<&str>) -> DatabaseResult<Connection> {

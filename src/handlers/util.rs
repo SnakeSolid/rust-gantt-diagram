@@ -3,6 +3,7 @@ use super::HandlerResult;
 use iron::mime::Mime;
 use iron::mime::SubLevel;
 use iron::mime::TopLevel;
+use iron::modifier::Modifier;
 use iron::status;
 use iron::IronResult;
 use iron::Request;
@@ -12,17 +13,19 @@ use serde::Serialize;
 use serde_json;
 use std::io::Read;
 
-pub fn handle_empty<Res, F>(callback: F) -> IronResult<Response>
+pub fn handle_read<Req, R, F>(request: &mut Request, callback: F) -> IronResult<Response>
 where
-    Res: Serialize,
-    F: FnOnce() -> HandlerResult<Res>,
+    Req: DeserializeOwned,
+    F: FnOnce(Req) -> HandlerResult<R>,
+    R: Modifier<Response>,
 {
-    let response = match callback() {
-        Ok(response) => ErrorResponse::success(response),
-        Err(err) => ErrorResponse::error(&format!("{}", err)),
-    };
-
-    struct_to_response(&response)
+    match serde_json::from_reader(request.body.by_ref()) {
+        Ok(request) => match callback(request) {
+            Ok(body) => Ok(Response::with((status::Ok, body))),
+            Err(err) => Ok(Response::with((status::BadRequest, format!("{}", err)))),
+        },
+        Err(err) => Ok(Response::with((status::BadRequest, format!("{}", err)))),
+    }
 }
 
 pub fn handle_request<Req, Res, F>(request: &mut Request, callback: F) -> IronResult<Response>

@@ -112,8 +112,8 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			} else {
 				this.setError(resp.message);
 			}
-		}.bind(this)).fail(function(err, msg) {
-			this.setError(msg);
+		}.bind(this)).fail(function(resp) {
+			this.setError(resp.responseText);
 		}.bind(this));
 
 		this.setLoading();
@@ -139,8 +139,8 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			} else {
 				this.setError(resp.message);
 			}
-		}.bind(this)).fail(function(err, msg) {
-			this.setError(msg);
+		}.bind(this)).fail(function(resp) {
+			this.setError(resp.responseText);
 		}.bind(this));
 
 		this.setLoading();
@@ -149,8 +149,7 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 	Connect.prototype.loadData = function() {
 		const res = reqwest({
 			url: "/api/v1/data",
-			type: "json",
-  			method: "POST",
+			method: "POST",
 			contentType: 'application/json',
 			data: JSON.stringify({
 				server: this.serverName(),
@@ -161,24 +160,20 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 				stage: this.stageSelected(),
 			})
 		}).then(function(resp) {
-			if (resp.success) {
-				const items = d3.dsvFormat(";").parseRows(resp.result, function(row) {
-					return new Target({
-						name: row[0],
-						startTime: parseFloat(row[1]),
-						endTime: parseFloat(row[2]),
-						groupName: row[3],
-						threadName: row[4],
-					});
+			const items = d3.dsvFormat(";").parseRows(resp, function(row) {
+				return new Target({
+					name: row[0],
+					startTime: parseFloat(row[1]),
+					endTime: parseFloat(row[2]),
+					groupName: row[3],
+					threadName: row[4],
 				});
+			});
 
-				this.callback(items);
-				this.setReady();
-			} else {
-				this.setError(resp.message);
-			}
-		}.bind(this)).fail(function(err, msg) {
-			this.setError(msg);
+			this.callback(items);
+			this.setReady();
+		}.bind(this)).fail(function(resp) {
+			this.setError(resp.responseText);
 		}.bind(this));
 
 		this.setLoading();
