@@ -11,6 +11,8 @@ pub type DatabaseResult<T> = Result<T, DatabaseError>;
 pub enum DatabaseError {
     ConnectionError { message: String },
     QueryExecutionError { message: String },
+    PrepareQueryError { message: String },
+    TransactionError { message: String },
     ConversionError { message: String },
     TimeParseError { message: String },
     ColumnNotExists,
@@ -25,6 +27,18 @@ impl DatabaseError {
 
     pub fn query_execution_error(error: PgError) -> DatabaseError {
         DatabaseError::QueryExecutionError {
+            message: format!("{}", error),
+        }
+    }
+
+    pub fn prepare_query_error(error: PgError) -> DatabaseError {
+        DatabaseError::PrepareQueryError {
+            message: format!("{}", error),
+        }
+    }
+
+    pub fn transaction_error(error: PgError) -> DatabaseError {
+        DatabaseError::TransactionError {
             message: format!("{}", error),
         }
     }
@@ -59,6 +73,8 @@ impl Display for DatabaseError {
         match self {
             DatabaseError::ConnectionError { message } => write!(f, "{}", message),
             DatabaseError::QueryExecutionError { message } => write!(f, "{}", message),
+            DatabaseError::PrepareQueryError { message } => write!(f, "{}", message),
+            DatabaseError::TransactionError { message } => write!(f, "{}", message),
             DatabaseError::ConversionError { message } => write!(f, "{}", message),
             DatabaseError::TimeParseError { message } => write!(f, "{}", message),
             DatabaseError::ColumnNotExists => write!(f, "Column does not exists"),

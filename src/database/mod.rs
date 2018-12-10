@@ -3,6 +3,7 @@ mod error;
 pub use self::error::DatabaseError;
 pub use self::error::DatabaseResult;
 
+use fallible_iterator::FallibleIterator;
 use postgres::params::ConnectParams;
 use postgres::params::Host;
 use postgres::Connection;
@@ -19,6 +20,7 @@ pub struct PostgreSQL {
 }
 
 const DEFAULT_DATABASE: &str = "postgres";
+const FETCH_LIMIT: i32 = 1_000;
 
 impl PostgreSQL {
     pub fn new(server: &str, port: u16, user: &str, password: &str) -> PostgreSQL {
@@ -76,11 +78,17 @@ impl PostgreSQL {
         F: FnMut(&str, Timespec, Timespec, &str, &str) -> Result<(), E>,
     {
         let connection = self.connect(Some(database))?;
+        let statement = connection
+            .prepare(include_str!("sql/data.sql"))
+            .map_err(DatabaseError::prepare_query_error)?;
+        let transaction = connection
+            .transaction()
+            .map_err(DatabaseError::transaction_error)?;
+        let mut rows = statement
+            .lazy_query(&transaction, &[&stage], FETCH_LIMIT)
+            .map_err(DatabaseError::query_execution_error)?;
 
-        for row in &connection
-            .query(include_str!("sql/data.sql"), &[&stage])
-            .map_err(DatabaseError::query_execution_error)?
-        {
+        while let Some(row) = rows.next().map_err(DatabaseError::query_execution_error)? {
             let name: String = row
                 .get_opt(0)
                 .ok_or_else(DatabaseError::column_not_exists)?
