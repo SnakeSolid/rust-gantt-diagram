@@ -12,6 +12,7 @@ use iron::Response as IronResponse;
 use std::io::BufWriter;
 use std::io::Result as IoResult;
 use std::io::Write;
+use std::path::Path;
 use std::path::PathBuf;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
@@ -24,9 +25,9 @@ pub struct DataHandler {
 }
 
 impl DataHandler {
-    pub fn new() -> DataHandler {
+    pub fn new(temp_dir: &Path) -> DataHandler {
         DataHandler {
-            temp_dir: ".".into(),
+            temp_dir: temp_dir.to_path_buf(),
             request_index: AtomicUsize::new(0),
         }
     }
