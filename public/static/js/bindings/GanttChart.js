@@ -1,6 +1,6 @@
 "use strict";
 
-define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(ko, d3, moment, Util) {
+define(["knockout", "d3", "moment", "Util", "d3-color", "d3-axis"], function(ko, d3, moment, Util) {
 	const KEY_CHART = "chart";
 	const THRESHOLD_DRAW = 0.01;
 	const THRESHOLD_LINE = 0.1;
@@ -69,14 +69,16 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 		const x = event.clientX - clientRect.left;
 		const y = event.clientY - clientRect.top;
 
-		if (x < CHART_PADDING_LEFT
-			|| x > target.width - CHART_PADDING_RIGHT
-			|| y < CHART_PADDING_TOP
-			|| y > target.height - CHART_PADDING_BOTTOM) {
+		if (
+			x < CHART_PADDING_LEFT ||
+			x > target.width - CHART_PADDING_RIGHT ||
+			y < CHART_PADDING_TOP ||
+			y > target.height - CHART_PADDING_BOTTOM
+		) {
 			return null;
 		}
 
-		return [ x, y ];
+		return [x, y];
 	};
 
 	GanttChart.prototype.onSelect = function(event) {
@@ -109,7 +111,7 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 		this.selectCallback(selectedItems);
 
 		event.preventDefault();
-	}
+	};
 
 	GanttChart.prototype.onPanStart = function(event) {
 		if (!this.isInitialized() || event.button !== 0) {
@@ -152,7 +154,7 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			this.viewMin += viewOffset;
 			this.viewMax += viewOffset;
 			this.adjustView(positionX);
-			this.panPosition =  this.xScale.invert(x).getTime();
+			this.panPosition = this.xScale.invert(x).getTime();
 		}
 
 		this.cursorPosition = positionX;
@@ -203,7 +205,7 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 		const viewDiff = this.viewMax - this.viewMin;
 
 		if (viewDiff < 10.0) {
-			const fixFactor = 10.0 / (viewDiff);
+			const fixFactor = 10.0 / viewDiff;
 
 			this.viewMin = fixFactor * (this.viewMin - position) + position;
 			this.viewMax = fixFactor * (this.viewMax - position) + position;
@@ -223,7 +225,7 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			this.viewMin = this.timeMin;
 		}
 
-		this.xScale.domain([ this.viewMin, this.viewMax ]);
+		this.xScale.domain([this.viewMin, this.viewMax]);
 	};
 
 	GanttChart.prototype.setItems = function(items) {
@@ -241,7 +243,7 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 		}
 
 		const threadLines = {};
-		const threadNames = []
+		const threadNames = [];
 		const groupColors = {};
 
 		Util.assignIndexes(uniqueThreads, function(name, index) {
@@ -265,10 +267,12 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 		this.viewMax = timeMax;
 
 		if (threadNames.length > 0) {
-			this.xScale = d3.scaleUtc()
+			this.xScale = d3
+				.scaleUtc()
 				.domain([this.viewMin, this.viewMax])
 				.range([CHART_PADDING_LEFT, this.canvas.width - CHART_PADDING_RIGHT]);
-			this.yScale = d3.scaleQuantize()
+			this.yScale = d3
+				.scaleQuantize()
 				.domain([0, uniqueThreads.size - 1])
 				.range(threadNames);
 
@@ -278,17 +282,19 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 
 	GanttChart.prototype.isInitialized = function() {
 		return this.items.length !== 0 && this.xScale !== null && this.yScale !== null;
-	}
+	};
 
 	GanttChart.prototype.doDraw = function() {
 		if (this.isInitialized() && !this.isFrameRequested) {
 			this.isFrameRequested = true;
 
-			requestAnimationFrame(function() {
-				this.draw();
+			requestAnimationFrame(
+				function() {
+					this.draw();
 
-				this.isFrameRequested = false;
-			}.bind(this));
+					this.isFrameRequested = false;
+				}.bind(this)
+			);
 		}
 	};
 
@@ -321,17 +327,17 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 		this.context.moveTo(y - 0.5, CHART_PADDING_TOP);
 		this.context.lineTo(y - 0.5, CHART_PADDING_TOP + CHART_THREAD_HEIGHT * this.nThreadLines);
 		this.context.stroke();
-	}
+	};
 
 	GanttChart.prototype.drawBlocks = function() {
 		this.context.save();
 		this.context.beginPath();
 		this.context.rect(
-				CHART_PADDING_LEFT,
-				CHART_PADDING_TOP,
-				this.canvas.width - CHART_PADDING_RIGHT - CHART_PADDING_LEFT,
-				this.canvas.height - CHART_PADDING_BOTTOM - CHART_PADDING_TOP
-			 );
+			CHART_PADDING_LEFT,
+			CHART_PADDING_TOP,
+			this.canvas.width - CHART_PADDING_RIGHT - CHART_PADDING_LEFT,
+			this.canvas.height - CHART_PADDING_BOTTOM - CHART_PADDING_TOP
+		);
 		this.context.clip();
 
 		this.context.lineWidth = 1;
@@ -381,13 +387,17 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 				let textWidth = this.context.measureText(name).width;
 
 				if (textWidth < width - CHART_TEXT_OFFSET_X - CHART_TEXT_PADDING_LEFT) {
-					this.context.fillText(name, CHART_TEXT_OFFSET_X + startX, CHART_TEXT_OFFSET_Y + CHART_THREAD_HEIGHT * threadIndex);
+					this.context.fillText(
+						name,
+						CHART_TEXT_OFFSET_X + startX,
+						CHART_TEXT_OFFSET_Y + CHART_THREAD_HEIGHT * threadIndex
+					);
 				} else {
 					let trimIndex = name.length - 1;
 					let nameText = name.substring(0, trimIndex) + "...";
 
 					while (trimIndex > 0) {
-						trimIndex -= 1;;
+						trimIndex -= 1;
 						nameText = name.substring(0, trimIndex) + "...";
 
 						const textWidth = this.context.measureText(nameText).width;
@@ -397,13 +407,17 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 						}
 					}
 
-					this.context.fillText(nameText, CHART_TEXT_OFFSET_X + startX, CHART_TEXT_OFFSET_Y + CHART_THREAD_HEIGHT * threadIndex);
+					this.context.fillText(
+						nameText,
+						CHART_TEXT_OFFSET_X + startX,
+						CHART_TEXT_OFFSET_Y + CHART_THREAD_HEIGHT * threadIndex
+					);
 				}
 			}
 		}
 
 		this.context.restore();
-	}
+	};
 
 	GanttChart.prototype.drawYAxis = function() {
 		const scaleRange = this.yScale.range();
@@ -493,7 +507,8 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			const hilightCallback = params.hilightCallback;
 			const selectCallback = params.selectCallback;
 			const width = window.innerWidth - 4;
-			const canvas = d3.select(element)
+			const canvas = d3
+				.select(element)
 				.append("canvas")
 				.attr("width", width)
 				.attr("height", 1)
@@ -514,6 +529,6 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			const chart = ko.utils.domData.get(element, KEY_CHART);
 
 			chart.setItems(items);
-		}
+		},
 	};
 });

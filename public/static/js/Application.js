@@ -1,6 +1,6 @@
 "use strict";
 
-define([ "knockout", "Components", "bindings/GanttChart" ], function(ko) {
+define(["knockout", "Components", "bindings/GanttChart"], function(ko) {
 	const PAGE_CONNECT = "Connect";
 	const PAGE_CHART = "Chart";
 

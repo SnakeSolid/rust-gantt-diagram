@@ -1,9 +1,7 @@
 <div data-bind="if: hasItems">
-  <div>
-    <div data-bind="ganttChart: { items: items, selectCallback: selectedItems }"></div>
-  </div>
+  <div><div data-bind="ganttChart: { items: items, selectCallback: selectedItems }"></div></div>
 
-  <hr class="separator">
+  <hr class="separator" />
 
   <div class="ui grid">
     <div class="one wide column"></div>
@@ -11,8 +9,7 @@
     <div class="fourteen wide column">
       <p data-bind="foreach: groups">
         <span class="group_block">
-          <span class="group_color" data-bind="style: { 'background-color': color }">&emsp;</span>
-          &mdash;
+          <span class="group_color" data-bind="style: { 'background-color': color }">&emsp;</span> &mdash;
           <span data-bind="text: name"></span>
         </span>
       </p>
@@ -22,7 +19,7 @@
   </div>
 
   <div data-bind="if: hasSelectedItems">
-    <hr class="separator">
+    <hr class="separator" />
 
     <div class="ui grid">
       <div class="one wide column"></div>
@@ -47,8 +44,7 @@
               <td data-bind="text: name"></td>
               <td>
                 <span class="group_block">
-                  <span class="group_color" data-bind="style: $component.groupStyle(groupName)">&emsp;</span>
-                  &mdash;
+                  <span class="group_color" data-bind="style: $component.groupStyle(groupName)">&emsp;</span> &mdash;
                   <span data-bind="text: groupName"></span>
                 </span>
               </td>
@@ -67,8 +63,5 @@
 </div>
 
 <div data-bind="ifnot: hasItems">
-  <h3 class="ui center aligned icon header">
-    <i class="plug icon icon"></i>
-    Connection Has No Items
-  </h3>
+  <h3 class="ui center aligned icon header"><i class="plug icon icon"></i> Connection Has No Items</h3>
 </div>

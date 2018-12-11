@@ -1,6 +1,6 @@
 "use strict";
 
-define([ "knockout", "d3", "Target", "Util", "bindings/GanttChart" ], function(ko, d3, Target, Util, GanttChart) {
+define(["knockout", "d3", "Target", "Util", "bindings/GanttChart"], function(ko, d3, Target, Util, GanttChart) {
 	const Chart = function(params) {
 		this.items = params.items;
 		this.items.subscribe(this.updateGroups.bind(this));
@@ -24,7 +24,7 @@ define([ "knockout", "d3", "Target", "Util", "bindings/GanttChart" ], function(k
 		style["background-color"] = this.groupColors()[name] || "#808080";
 
 		return style;
-	}
+	};
 
 	Chart.prototype.updateGroups = function(rows) {
 		const uniqueGroups = new Set();

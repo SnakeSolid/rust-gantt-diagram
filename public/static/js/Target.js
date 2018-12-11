@@ -1,6 +1,6 @@
 "use strict";
 
-define([ "knockout", "moment" ], function(ko, moment) {
+define(["knockout", "moment"], function(ko, moment) {
 	const TIME_FROMAT = "YYYY.MM.DD hh:mm:ss.SSS";
 
 	const Target = function(params) {

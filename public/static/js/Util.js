@@ -1,6 +1,6 @@
 "use strict";
 
-define([ "d3" ], function(d3) {
+define(["d3"], function(d3) {
 	const toSortedArray = function(it) {
 		return Array.from(it).sort(function(a, b) {
 			if (a < b) {
@@ -11,7 +11,7 @@ define([ "d3" ], function(d3) {
 				return 0;
 			}
 		});
-	}
+	};
 
 	const assignIndexes = function(values, callback) {
 		const valueColors = [];
@@ -29,7 +29,7 @@ define([ "d3" ], function(d3) {
 		let valueIndex = 0;
 
 		for (const name of allValues) {
-			const color = d3.hsl(360 * valueIndex / allValues.length, 1.0, 0.7).hex();
+			const color = d3.hsl((360 * valueIndex) / allValues.length, 1.0, 0.7).hex();
 
 			callback(name, color);
 

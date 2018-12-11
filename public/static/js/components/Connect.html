@@ -12,53 +12,63 @@
     <div class="two fields">
       <div class="required field" data-bind="css: { error: isServerNameInvalid }">
         <label for="server_name">Server name:</label>
-        <input id="server_name" type="text" data-bind="textInput: serverName">
+        <input id="server_name" type="text" data-bind="textInput: serverName" />
       </div>
 
       <div class="required field" data-bind="css: { error: isPortNumberInvalid }">
         <label for="port_number">Port number:</label>
-        <input id="port_number" type="text" data-bind="textInput: portNumber">
+        <input id="port_number" type="text" data-bind="textInput: portNumber" />
       </div>
     </div>
 
     <div class="two fields">
       <div class="required field" data-bind="css: { error: isUserNameInvalid }">
-        <label for="user_name">User name:</label>
-        <input id="user_name" type="text" data-bind="textInput: userName">
+        <label for="user_name">User name:</label> <input id="user_name" type="text" data-bind="textInput: userName" />
       </div>
 
       <div class="field">
-        <label for="password">Password:</label>
-        <input id="password" type="text" data-bind="textInput: password">
+        <label for="password">Password:</label> <input id="password" type="text" data-bind="textInput: password" />
       </div>
     </div>
 
     <div class="two fields">
       <div class="required field" data-bind="css: { error: isDatabaseInvalid, disabled: isDatabaseDisabled }">
         <label for="database">Database:</label>
-        <select id="database" data-bind="
+        <select
+          id="database"
+          data-bind="
             options: databaseList,
             value: databaseSelected,
             optionsCaption: 'Choose database...'
-          " class="ui dropdown">
+          "
+          class="ui dropdown"
+        >
         </select>
       </div>
 
       <div class="required field" data-bind="css: { error: isStageInvalid, disabled: isStageDisabled }">
         <label for="stage">Stage:</label>
-        <select id="stage" data-bind="
+        <select
+          id="stage"
+          data-bind="
             options: stageList,
             value: stageSelected,
             optionsCaption: 'Choose stage...'
-          " class="ui dropdown">
+          "
+          class="ui dropdown"
+        >
         </select>
       </div>
     </div>
 
     <div class="three ui buttons">
       <button class="ui primary button" data-bind="click: loadData, css: { disabled: isFormInvalid }">Connect</button>
-      <button class="ui grey button" data-bind="click: loadDatabases, css: { disabled: isDatabaseDisabled }">Load databases</button>
-      <button class="ui grey button" data-bind="click: loadStages, css: { disabled: isStageDisabled }">Load stages</button>
+      <button class="ui grey button" data-bind="click: loadDatabases, css: { disabled: isDatabaseDisabled }">
+        Load databases
+      </button>
+      <button class="ui grey button" data-bind="click: loadStages, css: { disabled: isStageDisabled }">
+        Load stages
+      </button>
     </div>
   </div>
 </div>

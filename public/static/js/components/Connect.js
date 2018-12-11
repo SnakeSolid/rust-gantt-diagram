@@ -1,6 +1,6 @@
 "use strict";
 
-define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Target) {
+define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target) {
 	const STATE_READY = "Ready";
 	const STATE_LOADING = "Loading";
 	const STATE_ERROR = "Error";
@@ -43,24 +43,26 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 		}, this);
 
 		this.isDatabaseDisabled = ko.pureComputed(function() {
-			return this.isServerNameInvalid()
-				|| this.isPortNumberInvalid()
-				|| this.isUserNameInvalid();
+			return this.isServerNameInvalid() || this.isPortNumberInvalid() || this.isUserNameInvalid();
 		}, this);
 
 		this.isStageDisabled = ko.pureComputed(function() {
-			return this.isServerNameInvalid()
-				|| this.isPortNumberInvalid()
-				|| this.isUserNameInvalid()
-				|| this.isDatabaseInvalid();
+			return (
+				this.isServerNameInvalid() ||
+				this.isPortNumberInvalid() ||
+				this.isUserNameInvalid() ||
+				this.isDatabaseInvalid()
+			);
 		}, this);
 
 		this.isFormInvalid = ko.pureComputed(function() {
-			return this.isServerNameInvalid()
-				|| this.isPortNumberInvalid()
-				|| this.isUserNameInvalid()
-				|| this.isDatabaseInvalid()
-				|| this.isStageInvalid();
+			return (
+				this.isServerNameInvalid() ||
+				this.isPortNumberInvalid() ||
+				this.isUserNameInvalid() ||
+				this.isDatabaseInvalid() ||
+				this.isStageInvalid()
+			);
 		}, this);
 
 		this.isLoading = ko.pureComputed(function() {
@@ -71,13 +73,15 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			return this.state() === STATE_ERROR;
 		}, this);
 
-		this.databaseSelected.subscribe(function(newValue) {
-			if (newValue !== undefined) {
-				this.loadStages();
-			} else {
-				this.stageList([]);
-			}
-		}.bind(this));
+		this.databaseSelected.subscribe(
+			function(newValue) {
+				if (newValue !== undefined) {
+					this.loadStages();
+				} else {
+					this.stageList([]);
+				}
+			}.bind(this)
+		);
 	};
 
 	Connect.prototype.setReady = function() {
@@ -98,23 +102,29 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			url: "/api/v1/databases",
 			type: "json",
 			method: "POST",
-			contentType: 'application/json',
+			contentType: "application/json",
 			data: JSON.stringify({
 				server: this.serverName(),
 				port: parseInt(this.portNumber()),
 				user: this.userName(),
 				password: this.password(),
-			})
-		}).then(function(resp) {
-			if (resp.success) {
-				this.databaseList(resp.result);
-				this.setReady();
-			} else {
-				this.setError(resp.message);
-			}
-		}.bind(this)).fail(function(resp) {
-			this.setError(resp.responseText);
-		}.bind(this));
+			}),
+		})
+			.then(
+				function(resp) {
+					if (resp.success) {
+						this.databaseList(resp.result);
+						this.setReady();
+					} else {
+						this.setError(resp.message);
+					}
+				}.bind(this)
+			)
+			.fail(
+				function(resp) {
+					this.setError(resp.responseText);
+				}.bind(this)
+			);
 
 		this.setLoading();
 	};
@@ -124,24 +134,30 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 			url: "/api/v1/stages",
 			type: "json",
 			method: "POST",
-			contentType: 'application/json',
+			contentType: "application/json",
 			data: JSON.stringify({
 				server: this.serverName(),
 				port: parseInt(this.portNumber()),
 				user: this.userName(),
 				password: this.password(),
 				database: this.databaseSelected(),
-			})
-		}).then(function(resp) {
-			if (resp.success) {
-				this.stageList(resp.result);
-				this.setReady();
-			} else {
-				this.setError(resp.message);
-			}
-		}.bind(this)).fail(function(resp) {
-			this.setError(resp.responseText);
-		}.bind(this));
+			}),
+		})
+			.then(
+				function(resp) {
+					if (resp.success) {
+						this.stageList(resp.result);
+						this.setReady();
+					} else {
+						this.setError(resp.message);
+					}
+				}.bind(this)
+			)
+			.fail(
+				function(resp) {
+					this.setError(resp.responseText);
+				}.bind(this)
+			);
 
 		this.setLoading();
 	};
@@ -150,7 +166,7 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 		const res = reqwest({
 			url: "/api/v1/data",
 			method: "POST",
-			contentType: 'application/json',
+			contentType: "application/json",
 			data: JSON.stringify({
 				server: this.serverName(),
 				port: parseInt(this.portNumber()),
@@ -158,23 +174,29 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 				password: this.password(),
 				database: this.databaseSelected(),
 				stage: this.stageSelected(),
-			})
-		}).then(function(resp) {
-			const items = d3.dsvFormat(";").parseRows(resp, function(row) {
-				return new Target({
-					name: row[0],
-					startTime: parseFloat(row[1]),
-					endTime: parseFloat(row[2]),
-					groupName: row[3],
-					threadName: row[4],
-				});
-			});
+			}),
+		})
+			.then(
+				function(resp) {
+					const items = d3.dsvFormat(";").parseRows(resp, function(row) {
+						return new Target({
+							name: row[0],
+							startTime: parseFloat(row[1]),
+							endTime: parseFloat(row[2]),
+							groupName: row[3],
+							threadName: row[4],
+						});
+					});
 
-			this.callback(items);
-			this.setReady();
-		}.bind(this)).fail(function(resp) {
-			this.setError(resp.responseText);
-		}.bind(this));
+					this.callback(items);
+					this.setReady();
+				}.bind(this)
+			)
+			.fail(
+				function(resp) {
+					this.setError(resp.responseText);
+				}.bind(this)
+			);
 
 		this.setLoading();
 	};
