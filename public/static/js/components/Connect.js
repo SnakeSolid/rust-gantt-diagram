@@ -97,7 +97,7 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 		const res = reqwest({
 			url: "/api/v1/databases",
 			type: "json",
-  			method: "POST",
+			method: "POST",
 			contentType: 'application/json',
 			data: JSON.stringify({
 				server: this.serverName(),
@@ -123,7 +123,7 @@ define([ "knockout", "reqwest", "d3", "Target" ], function(ko, reqwest, d3, Targ
 		const res = reqwest({
 			url: "/api/v1/stages",
 			type: "json",
-  			method: "POST",
+			method: "POST",
 			contentType: 'application/json',
 			data: JSON.stringify({
 				server: this.serverName(),
