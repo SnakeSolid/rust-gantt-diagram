@@ -4,6 +4,7 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 	const KEY_CHART = "chart";
 	const THRESHOLD_DRAW = 0.01;
 	const THRESHOLD_LINE = 0.1;
+	const THRESHOLD_TEXT = 100.0;
 
 	const CHART_FONT = "14px sans-serif";
 	const CHART_PADDING_LEFT = 140;
@@ -15,6 +16,9 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 	const CHART_CURSOR_COLOR = "#ffffff";
 	const CHART_PRIMARY_COLOR = "#000000";
 	const CHART_SECONDARY_COLOR = "#00000040";
+	const CHART_TEXT_OFFSET_X = 8;
+	const CHART_TEXT_PADDING_LEFT = 8;
+	const CHART_TEXT_OFFSET_Y = 23;
 
 	const X_AXIS_TICK_SIZE = 5;
 	const X_AXIS_DATE_LABEL_OFFSET = 20;
@@ -342,11 +346,11 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			let endX = this.xScale(item.endTime);
 
 			if (startX < CHART_PADDING_LEFT - 1.0) {
-				startX < CHART_PADDING_LEFT - 1.0;
+				startX = CHART_PADDING_LEFT - 1.0;
 			}
 
 			if (endX > this.canvas.width - CHART_PADDING_RIGHT + 1.0) {
-				endX > this.canvas.width - CHART_PADDING_RIGHT + 1.0;
+				endX = this.canvas.width - CHART_PADDING_RIGHT + 1.0;
 			}
 
 			const width = endX - startX;
@@ -367,6 +371,35 @@ define([ "knockout", "d3", "moment", "Util", "d3-color", "d3-axis" ], function(k
 			}
 
 			this.context.stroke();
+
+			if (width > THRESHOLD_TEXT) {
+				this.context.font = CHART_FONT;
+				this.context.fillStyle = "#000000";
+				this.context.textAlign = "left";
+
+				const name = item.name;
+				let textWidth = this.context.measureText(name).width;
+
+				if (textWidth < width - CHART_TEXT_OFFSET_X - CHART_TEXT_PADDING_LEFT) {
+					this.context.fillText(name, CHART_TEXT_OFFSET_X + startX, CHART_TEXT_OFFSET_Y + CHART_THREAD_HEIGHT * threadIndex);
+				} else {
+					let trimIndex = name.length - 1;
+					let nameText = name.substring(0, trimIndex) + "...";
+
+					while (trimIndex > 0) {
+						trimIndex -= 1;;
+						nameText = name.substring(0, trimIndex) + "...";
+
+						const textWidth = this.context.measureText(nameText).width;
+
+						if (textWidth < width - CHART_TEXT_OFFSET_X - CHART_TEXT_PADDING_LEFT) {
+							break;
+						}
+					}
+
+					this.context.fillText(nameText, CHART_TEXT_OFFSET_X + startX, CHART_TEXT_OFFSET_Y + CHART_THREAD_HEIGHT * threadIndex);
+				}
+			}
 		}
 
 		this.context.restore();
