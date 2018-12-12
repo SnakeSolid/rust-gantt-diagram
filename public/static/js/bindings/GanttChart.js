@@ -5,6 +5,7 @@ define(["knockout", "d3", "moment", "Util", "d3-color", "d3-axis"], function(ko,
 	const THRESHOLD_DRAW = 0.01;
 	const THRESHOLD_LINE = 0.1;
 	const THRESHOLD_TEXT = 100.0;
+	const HELLIP = "\u2026";
 
 	const CHART_FONT = "14px sans-serif";
 	const CHART_PADDING_LEFT = 140;
@@ -384,27 +385,27 @@ define(["knockout", "d3", "moment", "Util", "d3-color", "d3-axis"], function(ko,
 				this.context.textAlign = "left";
 
 				const name = item.name;
+				let blockWidth = width - CHART_TEXT_OFFSET_X - CHART_TEXT_PADDING_LEFT;
 				let textWidth = this.context.measureText(name).width;
 
-				if (textWidth < width - CHART_TEXT_OFFSET_X - CHART_TEXT_PADDING_LEFT) {
+				if (textWidth < blockWidth) {
 					this.context.fillText(
 						name,
 						CHART_TEXT_OFFSET_X + startX,
 						CHART_TEXT_OFFSET_Y + CHART_THREAD_HEIGHT * threadIndex
 					);
 				} else {
-					let trimIndex = name.length - 1;
-					let nameText = name.substring(0, trimIndex) + "...";
+					let trimIndex = Math.ceil((blockWidth / textWidth) * name.length);
+					let nameText = name.substring(0, trimIndex) + HELLIP;
 
-					while (trimIndex > 0) {
-						trimIndex -= 1;
-						nameText = name.substring(0, trimIndex) + "...";
+					textWidth = this.context.measureText(nameText).width;
 
-						const textWidth = this.context.measureText(nameText).width;
-
-						if (textWidth < width - CHART_TEXT_OFFSET_X - CHART_TEXT_PADDING_LEFT) {
-							break;
-						}
+					if (textWidth > blockWidth) {
+						do {
+							trimIndex -= 1;
+							nameText = name.substring(0, trimIndex) + HELLIP;
+							textWidth = this.context.measureText(nameText).width;
+						} while (textWidth > blockWidth);
 					}
 
 					this.context.fillText(
