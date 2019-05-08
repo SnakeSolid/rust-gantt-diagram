@@ -3,24 +3,42 @@
 
   <hr class="separator" />
 
-  <div class="ui grid">
-    <div class="one wide column"></div>
+  <div data-bind="if: isGroupsVisible">
+    <div class="ui grid">
+      <div class="one wide column"></div>
 
-    <div class="fourteen wide column">
-      <p data-bind="foreach: groups">
-        <span class="group_block">
-          <span class="group_color" data-bind="style: { 'background-color': color }">&emsp;</span> &mdash;
-          <span data-bind="text: name"></span>
-        </span>
-      </p>
+      <div class="fourteen wide column">
+        <h3>Total duration: <span data-bind="text: duration"></span></h3>
+
+        <table class="ui striped compact table">
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th>Cumulative Duration</th>
+              <th>Cumulative Percent</th>
+            </tr>
+          </thead>
+
+          <tbody data-bind="foreach: groups">
+            <tr>
+              <td>
+                <span class="group_block">
+                  <span class="group_color" data-bind="style: $component.groupStyle(name)">&emsp;</span> &mdash;
+                  <span data-bind="text: name"></span>
+                </span>
+              </td>
+              <td data-bind="text: duration"></td>
+              <td><span data-bind="text: percent"></span>&nbsp;%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="one wide column"></div>
     </div>
-
-    <div class="one wide column"></div>
   </div>
 
-  <div data-bind="if: hasSelectedItems">
-    <hr class="separator" />
-
+  <div data-bind="if: isSelectionVisible">
     <div class="ui grid">
       <div class="one wide column"></div>
 
