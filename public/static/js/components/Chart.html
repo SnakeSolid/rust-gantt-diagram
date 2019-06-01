@@ -3,42 +3,42 @@
 
   <hr class="separator" />
 
-  <div data-bind="if: isGroupsVisible">
+  <div>
     <div class="ui grid">
       <div class="one wide column"></div>
 
       <div class="fourteen wide column">
         <h3>Total duration: <span data-bind="text: duration"></span></h3>
-
-        <table class="ui striped compact table">
-          <thead>
-            <tr>
-              <th>Group</th>
-              <th>Cumulative Duration</th>
-              <th>Cumulative Percent</th>
-            </tr>
-          </thead>
-
-          <tbody data-bind="foreach: groups">
-            <tr>
-              <td>
-                <span class="group_block">
-                  <span class="group_color" data-bind="style: $component.groupStyle(name)">&emsp;</span> &mdash;
-                  <span data-bind="text: name"></span>
-                </span>
-              </td>
-              <td data-bind="text: duration"></td>
-              <td><span data-bind="text: percent"></span>&nbsp;%</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
       <div class="one wide column"></div>
     </div>
   </div>
 
+  <div id="groups_content">
+    <table id="groups_table" class="ui striped compact table">
+      <tbody>
+        <tr data-bind="foreach: groups">
+          <td>
+            <span class="group_block">
+              <span class="group_color" data-bind="style: $component.groupStyle(name)">&emsp;</span> &mdash;
+              <span data-bind="text: name"></span>
+            </span>
+          </td>
+        </tr>
+        <tr data-bind="foreach: groups">
+          <td data-bind="text: duration"></td>
+        </tr>
+        <tr data-bind="foreach: groups">
+          <td><span data-bind="text: percent"></span>&nbsp;%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <div data-bind="if: isSelectionVisible">
+    <hr class="separator" />
+
     <div class="ui grid">
       <div class="one wide column"></div>
 

@@ -18,10 +18,6 @@ define(["knockout", "moment", "Target", "Util", "bindings/GanttChart"], function
 			return this.duration() !== undefined;
 		}, this);
 
-		this.isGroupsVisible = ko.pureComputed(function() {
-			return this.selectedItems().length === 0;
-		}, this);
-
 		this.isSelectionVisible = ko.pureComputed(function() {
 			return this.selectedItems().length > 0;
 		}, this);
