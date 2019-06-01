@@ -82,6 +82,38 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 				}
 			}.bind(this)
 		);
+
+		this.setQueryParams();
+	};
+
+	Connect.prototype.setQueryParams = function() {
+		const query = document.location.search.replace(/^\?/, "");
+		const queryParts = query.split("&");
+		const queryParams = queryParts.reduce(function(acc, value) {
+			const parts = value.split("=", 2);
+
+			if (parts.length === 2) {
+				acc[parts[0]] = parts[1];
+			}
+
+			return acc;
+		}, {});
+
+		if ("server_name" in queryParams) {
+			this.serverName(queryParams["server_name"]);
+		}
+
+		if ("port_number" in queryParams) {
+			this.portNumber(parseInt(queryParams["port_number"]));
+		}
+
+		if ("user_name" in queryParams) {
+			this.userName(queryParams["user_name"]);
+		}
+
+		if ("password" in queryParams) {
+			this.password(queryParams["password"]);
+		}
 	};
 
 	Connect.prototype.setReady = function() {
