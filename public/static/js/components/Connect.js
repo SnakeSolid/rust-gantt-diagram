@@ -5,6 +5,25 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 	const STATE_LOADING = "Loading";
 	const STATE_ERROR = "Error";
 
+	const getQueryParams = function() {
+		const query = document.location.search.replace(/^\?/, "");
+		const queryParts = query.split("&");
+		const queryParams = queryParts.reduce(function(acc, value) {
+			const parts = value.split("=", 2);
+
+			if (parts.length === 2) {
+				const key = decodeURIComponent(parts[0]);
+				const value = decodeURIComponent(parts[1]);
+
+				acc[key] = value;
+			}
+
+			return acc;
+		}, {});
+
+		return queryParams;
+	};
+
 	const Connect = function(params) {
 		this.callback = params.callback;
 
@@ -83,39 +102,67 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 			}.bind(this)
 		);
 
-		this.setQueryParams();
+		this.updateForm();
 	};
 
-	Connect.prototype.setQueryParams = function() {
-		const query = document.location.search.replace(/^\?/, "");
-		const queryParts = query.split("&");
-		const queryParams = queryParts.reduce(function(acc, value) {
-			const parts = value.split("=", 2);
+	Connect.prototype.updateForm = function() {
+		const queryParams = getQueryParams();
+		const isServerNamePresent = "server_name" in queryParams;
+		const isPortNumberPresent = "port_number" in queryParams;
+		const isUserNamePresent = "user_name" in queryParams;
+		const isPasswordPresent = "password" in queryParams;
+		const isDatabasePresent = "database" in queryParams;
+		const isStagePresent = "stage" in queryParams;
 
-			if (parts.length === 2) {
-				const key = decodeURIComponent(parts[0]);
-				const value = decodeURIComponent(parts[1]);
-
-				acc[key] = value;
-			}
-
-			return acc;
-		}, {});
-
-		if ("server_name" in queryParams) {
+		if (isServerNamePresent) {
 			this.serverName(queryParams["server_name"]);
 		}
 
-		if ("port_number" in queryParams) {
+		if (isPortNumberPresent) {
 			this.portNumber(parseInt(queryParams["port_number"]));
 		}
 
-		if ("user_name" in queryParams) {
+		if (isUserNamePresent) {
 			this.userName(queryParams["user_name"]);
 		}
 
-		if ("password" in queryParams) {
+		if (isPasswordPresent) {
 			this.password(queryParams["password"]);
+		}
+
+		if (isDatabasePresent) {
+			const databaseName = queryParams["database"];
+
+			this.databaseList([databaseName]);
+			this.databaseSelected(databaseName);
+		}
+
+		if (isStagePresent) {
+			const stageName = queryParams["stage"];
+
+			this.stageList([stageName]);
+			this.stageSelected(stageName);
+		}
+
+		if (
+			isServerNamePresent &&
+			isPortNumberPresent &&
+			isUserNamePresent &&
+			isPasswordPresent &&
+			isDatabasePresent &&
+			isStagePresent
+		) {
+			this.loadData();
+		} else if (
+			isServerNamePresent &&
+			isPortNumberPresent &&
+			isUserNamePresent &&
+			isPasswordPresent &&
+			isDatabasePresent
+		) {
+			this.loadStages();
+		} else if (isServerNamePresent && isPortNumberPresent && isUserNamePresent && isPasswordPresent) {
+			this.loadDatabases();
 		}
 	};
 
