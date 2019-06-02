@@ -93,7 +93,10 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 			const parts = value.split("=", 2);
 
 			if (parts.length === 2) {
-				acc[parts[0]] = parts[1];
+				const key = decodeURIComponent(parts[0]);
+				const value = decodeURIComponent(parts[1]);
+
+				acc[key] = value;
 			}
 
 			return acc;
