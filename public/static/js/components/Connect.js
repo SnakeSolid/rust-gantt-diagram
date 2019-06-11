@@ -92,6 +92,42 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 			return this.state() === STATE_ERROR;
 		}, this);
 
+		this.settingsUrl = ko.pureComputed(function() {
+			let queryParams = [];
+
+			if (this.serverName() !== undefined && this.serverName().length !== 0) {
+				queryParams.push({ name: "server_name", value: this.serverName() });
+			}
+
+			if (this.portNumber() !== undefined && this.portNumber().length !== 0) {
+				queryParams.push({ name: "port_number", value: this.portNumber().toString() });
+			}
+
+			if (this.userName() !== undefined && this.userName().length !== 0) {
+				queryParams.push({ name: "user_name", value: this.userName() });
+			}
+
+			if (this.password() !== undefined && this.password().length !== 0) {
+				queryParams.push({ name: "password", value: this.password() });
+			}
+
+			if (this.databaseSelected() !== undefined) {
+				queryParams.push({ name: "database", value: this.databaseSelected() });
+			}
+
+			if (this.stageSelected() !== undefined) {
+				queryParams.push({ name: "stage", value: this.stageSelected() });
+			}
+
+			const href = queryParams
+				.map(function(value) {
+					return encodeURIComponent(value.name) + "=" + encodeURIComponent(value.value);
+				})
+				.join("&");
+
+			return document.location.origin + "/?" + href;
+		}, this);
+
 		this.databaseSelected.subscribe(
 			function(newValue) {
 				if (newValue !== undefined) {
