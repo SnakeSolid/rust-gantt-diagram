@@ -33,9 +33,11 @@
 
           <a class="item" data-bind="click: setConnectPage, css: { active: isConnectVisible }">Connect</a>
           <a class="item" data-bind="click: setChartPage, css: { active: isChartVisible }">Chart</a>
+          <a class="item" data-bind="click: setSettingsPage, css: { active: isSettingsVisible }">Settings</a>
         </div>
 
         <div data-bind="visible: isConnectVisible"><ko-connect params="callback: showChart"></ko-connect></div>
+        <div data-bind="visible: isSettingsVisible"><ko-settings params=""></ko-settings></div>
       </div>
 
       <div class="four wide column"></div>

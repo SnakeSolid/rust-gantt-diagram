@@ -10,4 +10,9 @@ define(["knockout"], function(ko) {
 		viewModel: { require: "components/Chart" },
 		template: { require: "text!components/Chart.html" },
 	});
+
+	ko.components.register("ko-settings", {
+		viewModel: { require: "components/Settings" },
+		template: { require: "text!components/Settings.html" },
+	});
 });

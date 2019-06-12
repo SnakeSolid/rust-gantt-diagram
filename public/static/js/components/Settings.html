@@ -1,0 +1,47 @@
+<div class="ui segment">
+  <div class="ui form">
+    <h3>Group Mapping Settings</h3>
+
+    <table class="ui selectable striped compact padded table">
+      <thead>
+        <tr>
+          <th class="two wide"></th>
+          <th class="seven wide">Group From Name</th>
+          <th class="seven wide">Group To Name</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: groupMapping">
+        <tr>
+          <td>
+            <div class="ui mini icon buttons">
+              <button class="ui red button" data-bind="click: $component.removePattern">
+                <i class="delete icon"></i>
+              </button>
+            </div>
+          </td>
+          <td data-bind="text: fromName"></td>
+          <td data-bind="text: toName"></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <td>
+          <div class="ui mini icon buttons">
+            <button class="ui green button" data-bind="click: addPattern"><i class="add icon"></i>Add</button>
+          </div>
+        </td>
+        <td class="five wide">
+          <div class="field"><input placeholder="Path pattern" type="text" data-bind="value: editGroupFromName" /></div>
+        </td>
+        <td class="five wide">
+          <div class="field">
+            <input placeholder="Replace pattern" type="text" data-bind="value: editGroupToName" />
+          </div>
+        </td>
+      </tfoot>
+    </table>
+
+    <div class="ui hidden divider"></div>
+
+    <button class="ui primary fluid button" data-bind="click: saveSettings">Save settings</button>
+  </div>
+</div>

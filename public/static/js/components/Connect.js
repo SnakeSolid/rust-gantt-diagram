@@ -1,6 +1,6 @@
 "use strict";
 
-define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target) {
+define(["knockout", "reqwest", "d3", "Storage", "Target"], function(ko, reqwest, d3, Storage, Target) {
 	const STATE_READY = "Ready";
 	const STATE_LOADING = "Loading";
 	const STATE_ERROR = "Error";
@@ -216,7 +216,7 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 	};
 
 	Connect.prototype.loadDatabases = function() {
-		const res = reqwest({
+		reqwest({
 			url: "/api/v1/databases",
 			type: "json",
 			method: "POST",
@@ -248,7 +248,7 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 	};
 
 	Connect.prototype.loadStages = function() {
-		const res = reqwest({
+		reqwest({
 			url: "/api/v1/stages",
 			type: "json",
 			method: "POST",
@@ -281,7 +281,7 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 	};
 
 	Connect.prototype.loadData = function() {
-		const res = reqwest({
+		reqwest({
 			url: "/api/v1/data",
 			method: "POST",
 			contentType: "application/json",
@@ -296,12 +296,15 @@ define(["knockout", "reqwest", "d3", "Target"], function(ko, reqwest, d3, Target
 		})
 			.then(
 				function(resp) {
+					const mappings = Storage.getGroupMapping();
 					const items = d3.dsvFormat(";").parseRows(resp, function(row) {
+						const groupName = row[3];
+
 						return new Target({
 							name: row[0],
 							startTime: parseFloat(row[1]),
 							endTime: parseFloat(row[2]),
-							groupName: row[3],
+							groupName: groupName in mappings ? mappings[groupName] : groupName,
 							threadName: row[4],
 						});
 					});
