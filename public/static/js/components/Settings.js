@@ -28,7 +28,7 @@ define(["knockout", "Storage"], function(ko, Storage) {
 		const groupMapping = Object.keys(mappings).map(function(key) {
 			return {
 				fromName: key,
-				toName: mappings[key],
+				toName: ko.observable(mappings[key]),
 			};
 		});
 
@@ -45,7 +45,7 @@ define(["knockout", "Storage"], function(ko, Storage) {
 
 		for (const item of groupMapping) {
 			if (item.fromName === fromName) {
-				item.toName = toName;
+				item.toName(toName);
 				nameExists = true;
 
 				break;
@@ -55,7 +55,7 @@ define(["knockout", "Storage"], function(ko, Storage) {
 		if (!nameExists) {
 			groupMapping.push({
 				fromName: fromName,
-				toName: toName,
+				toName: ko.observable(toName),
 			});
 			groupMapping.sort(compareGroupsNames);
 		}
@@ -65,7 +65,7 @@ define(["knockout", "Storage"], function(ko, Storage) {
 
 	Settings.prototype.saveSettings = function() {
 		const mappings = this.groupMapping().reduce(function(acc, item) {
-			acc[item.fromName] = item.toName;
+			acc[item.fromName] = item.toName();
 
 			return acc;
 		}, {});
