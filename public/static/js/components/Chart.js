@@ -69,7 +69,7 @@ define(["knockout", "moment", "Target", "Util", "bindings/GanttChart"], function
 		});
 
 		this.groups(groups);
-		this.groupColors = ko.observable(groupColors);
+		this.groupColors(groupColors);
 
 		if (maxTime > minTime) {
 			const duration = moment.duration(maxTime - minTime).humanize();
