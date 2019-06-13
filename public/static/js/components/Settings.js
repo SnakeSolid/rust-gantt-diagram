@@ -13,8 +13,12 @@ define(["knockout", "Storage"], function(ko, Storage) {
 
 	const Settings = function(params) {
 		this.groupMapping = ko.observableArray();
-		this.editGroupName = ko.observable();
-		this.editRenameTo = ko.observable();
+		this.editGroupName = ko.observable("");
+		this.editRenameTo = ko.observable("");
+
+		this.isAddEnabled = ko.pureComputed(function() {
+			return this.editGroupName() !== "" && this.editRenameTo() !== "";
+		}, this);
 
 		this.removePattern = function(item) {
 			this.groupMapping.remove(item);
@@ -60,6 +64,8 @@ define(["knockout", "Storage"], function(ko, Storage) {
 			groupMapping.sort(compareGroupsNames);
 		}
 
+		this.editGroupName("");
+		this.editRenameTo("");
 		this.groupMapping(groupMapping);
 	};
 

@@ -26,15 +26,19 @@
       <tfoot>
         <td>
           <div class="ui mini icon buttons">
-            <button class="ui green button" data-bind="click: addPattern"><i class="add icon"></i>Add</button>
+            <button class="ui green button" data-bind="click: addPattern, enable: isAddEnabled">
+              <i class="add icon"></i>Add
+            </button>
           </div>
         </td>
         <td class="five wide">
-          <div class="field"><input placeholder="Path pattern" type="text" data-bind="value: editGroupName" /></div>
+          <div class="field">
+            <input placeholder="Original group name" type="text" data-bind="textInput: editGroupName" />
+          </div>
         </td>
         <td class="five wide">
           <div class="field">
-            <input placeholder="Replace pattern" type="text" data-bind="value: editRenameTo" />
+            <input placeholder="Rename group to" type="text" data-bind="textInput: editRenameTo" />
           </div>
         </td>
       </tfoot>
