@@ -6,8 +6,8 @@
       <thead>
         <tr>
           <th class="two wide"></th>
-          <th class="seven wide">Group From Name</th>
-          <th class="seven wide">Group To Name</th>
+          <th class="seven wide">Group Name</th>
+          <th class="seven wide">Rename To</th>
         </tr>
       </thead>
       <tbody data-bind="foreach: groupMapping">
@@ -19,8 +19,8 @@
               </button>
             </div>
           </td>
-          <td data-bind="text: fromName"></td>
-          <td data-bind="text: toName"></td>
+          <td data-bind="text: groupName"></td>
+          <td data-bind="text: renameTo"></td>
         </tr>
       </tbody>
       <tfoot>
@@ -30,11 +30,11 @@
           </div>
         </td>
         <td class="five wide">
-          <div class="field"><input placeholder="Path pattern" type="text" data-bind="value: editGroupFromName" /></div>
+          <div class="field"><input placeholder="Path pattern" type="text" data-bind="value: editGroupName" /></div>
         </td>
         <td class="five wide">
           <div class="field">
-            <input placeholder="Replace pattern" type="text" data-bind="value: editGroupToName" />
+            <input placeholder="Replace pattern" type="text" data-bind="value: editRenameTo" />
           </div>
         </td>
       </tfoot>
