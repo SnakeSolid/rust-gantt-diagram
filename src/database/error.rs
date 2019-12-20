@@ -13,7 +13,7 @@ pub enum DatabaseError {
     QueryExecutionError { message: String },
     PrepareQueryError { message: String },
     TransactionError { message: String },
-    ConversionError { message: String },
+    ConversionError { message: String, column: String },
     TimeParseError { message: String },
     ColumnNotExists,
 }
@@ -43,11 +43,12 @@ impl DatabaseError {
         }
     }
 
-    pub fn conversion_error(error: PgError) -> DatabaseError {
-        warn!("Conversion error: {}", error);
+    pub fn conversion_error(error: PgError, column: &str) -> DatabaseError {
+        warn!("Conversion error for column `{}`: {}", column, error);
 
         DatabaseError::ConversionError {
             message: format!("{}", error),
+            column: column.into(),
         }
     }
 
@@ -75,7 +76,9 @@ impl Display for DatabaseError {
             DatabaseError::QueryExecutionError { message } => write!(f, "{}", message),
             DatabaseError::PrepareQueryError { message } => write!(f, "{}", message),
             DatabaseError::TransactionError { message } => write!(f, "{}", message),
-            DatabaseError::ConversionError { message } => write!(f, "{}", message),
+            DatabaseError::ConversionError { message, column } => {
+                write!(f, "Conversion error for column `{}`: {}", column, message)
+            }
             DatabaseError::TimeParseError { message } => write!(f, "{}", message),
             DatabaseError::ColumnNotExists => write!(f, "Column does not exists"),
         }

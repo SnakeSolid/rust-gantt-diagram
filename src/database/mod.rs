@@ -44,7 +44,9 @@ impl PostgreSQL {
                 .get_opt(0)
                 .ok_or_else(DatabaseError::column_not_exists)?;
 
-            result.push(name.map_err(DatabaseError::conversion_error)?);
+            result.push(
+                name.map_err(|error| DatabaseError::conversion_error(error, "database name"))?,
+            );
         }
 
         Ok(result)
@@ -62,7 +64,8 @@ impl PostgreSQL {
                 .get_opt(0)
                 .ok_or_else(DatabaseError::column_not_exists)?;
 
-            result.push(name.map_err(DatabaseError::conversion_error)?);
+            result
+                .push(name.map_err(|error| DatabaseError::conversion_error(error, "maker name"))?);
         }
 
         Ok(result)
@@ -92,23 +95,23 @@ impl PostgreSQL {
             let name: String = row
                 .get_opt(0)
                 .ok_or_else(DatabaseError::column_not_exists)?
-                .map_err(DatabaseError::conversion_error)?;
+                .map_err(|error| DatabaseError::conversion_error(error, "name"))?;
             let start_time_str: String = row
                 .get_opt(1)
                 .ok_or_else(DatabaseError::column_not_exists)?
-                .map_err(DatabaseError::conversion_error)?;
+                .map_err(|error| DatabaseError::conversion_error(error, "start tame"))?;
             let end_time_str: String = row
                 .get_opt(2)
                 .ok_or_else(DatabaseError::column_not_exists)?
-                .map_err(DatabaseError::conversion_error)?;
+                .map_err(|error| DatabaseError::conversion_error(error, "end time"))?;
             let group: String = row
                 .get_opt(3)
                 .ok_or_else(DatabaseError::column_not_exists)?
-                .map_err(DatabaseError::conversion_error)?;
+                .map_err(|error| DatabaseError::conversion_error(error, "group name"))?;
             let thread: String = row
                 .get_opt(4)
                 .ok_or_else(DatabaseError::column_not_exists)?
-                .map_err(DatabaseError::conversion_error)?;
+                .map_err(|error| DatabaseError::conversion_error(error, "thread name"))?;
             let start_time = strptime(&start_time_str, "%Y-%m-%d %H:%M:%S,%f")
                 .map_err(DatabaseError::time_parse_error)?
                 .to_timespec();
