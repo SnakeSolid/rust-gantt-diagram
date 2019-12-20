@@ -54,7 +54,7 @@ impl Handler for DataHandler {
             );
             let path = self.next_temporary_path();
             let file = TemporaryFile::new(&path).map_err(|e| HandlerError::new(&e.to_string()))?;
-            let mut writer = BufWriter::new(file);;
+            let mut writer = BufWriter::new(file);
 
             postgres
                 .data(
@@ -80,7 +80,7 @@ impl Handler for DataHandler {
 }
 
 fn write_dlm_string(
-    writer: &mut Write,
+    writer: &mut dyn Write,
     name: &str,
     start_date: Timespec,
     end_date: Timespec,
